@@ -11,7 +11,12 @@ const store = new Vuex.Store({
 	},
 	//修改store里的东西都需要经过mutations
 	mutations: {
-		addCart(state, payload){
+			addCount(state,payload){
+				payload.count++
+			},
+			addPush(state,payload){
+				state.cartList.push(payload)
+			}
 			// let oldProduct = null;
 			// for(let item of state.cartList){
 			// 	if(item.iid === payload.iid){
@@ -19,21 +24,31 @@ const store = new Vuex.Store({
 			// 	}
 			// }
 			//数组find()方法
-			let oldProduct = state.cartList.find(function(item){
-				return item.iid === payload.iid
-			})
-			if(oldProduct){
-				oldProduct.count += 1;
-			}else {
-				payload.count = 1;
-				payload.checked = true;
-				state.cartList.push(payload)
-			}
+			
+			
 			// state.cartList.push(payload)
 			// console.log(payload);
-		}
+		},
+	actions:{
+		addCart(context,payload){
+			return new Promise((resolve,reject)=>{
+				let oldProduct = context.state.cartList.find(function(item){
+					return item.iid === payload.iid
+				})
+				if(oldProduct){
+					context.commit("addCount",payload)
+					resolve("商品添加成功")
+				}else {
+					payload.count = 1;
+					payload.checked = true;
+					context.commit("addPush",payload)
+					resolve("添加了新的商品")
+			}
+			})
+	}
 	}
 })
+	
 
 //3.挂载
 export default store

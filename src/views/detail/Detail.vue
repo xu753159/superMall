@@ -17,14 +17,15 @@
 		</scroll>
 		<back-top @click.native="backTop" v-show="isShowBackTop" />
 		<detail-bot-bar @addCart="addCart"></detail-bot-bar>
+		<toast :message="toastMessage" :isShow="showToast"></toast>
 	</div>
 </template>
 
 <script>
 	import Scroll from "components/common/scroll/Scroll.vue";
+	import Toast from 'components/common/toast/Toast.vue'
 	// import BackTop from "components/content/backTop/BackTop.vue";
 	import GoodsList from "components/content/goodsList/GoodsList.vue";
-
 	import DetailTabBar from './childCopm/DetailTabBar.vue'
 	import DetailSwiper from './childCopm/DetailSwiper.vue'
 	import DetailBaseInfo from './childCopm/DetailBaseInfo.vue'
@@ -51,7 +52,8 @@
 			DetailParamInfo,
 			DetailCommentInfo,
 			GoodsList,
-			DetailBotBar
+			DetailBotBar,
+			Toast
 		},
 		data() {
 			return {
@@ -66,7 +68,9 @@
 				// isShowBackTop: false,
 				themeTopY: [],
 				currentIndex: 0,
-				itemImgLister: null
+				itemImgLister: null,
+				showToast:true,
+				toastMessage:""
 			}
 		},
 		created() {
@@ -146,7 +150,14 @@
 				product.iid = this.iid;
 
 				//将商品添加到购物车里
-				this.$store.commit('addCart', product);
+				this.$store.dispatch('addCart', product).then(res=>{
+					this.showToast =true;
+					this.toastMessage=res
+					setTimeout(()=>{
+						this.showToast=false
+						this.toastMessage=''
+					},1500)
+				});
 			}
 		},
 		destroyed() {

@@ -1,8 +1,9 @@
 <template>
 	<div class="cart-bot-bar flex">
-		<div><input type="checkbox" class="check" id="check">&ensp;<label for="check"> 全部</label> </div>
-		<div>合计：{{totalPrice}}</div>
+		<div><input type="checkbox" class="check" id="check" :checked="IsSelectAll" @click="checkClick">&ensp;<label for="check"> 全部</label> </div>
+		<div @click="textfalse">合计：{{totalPrice}}</div>
 		<div>去结算{{checkLength}}</div>
+		
 	</div>
 </template>
 
@@ -19,8 +20,28 @@
 			},
 			checkLength() {
 				return '(' + this.$store.state.cartList.filter(item => item.checked).length + ')';
-			}
-		}
+			},
+			IsSelectAll(){
+				if(this.$store.state.cartList.length==0)return false
+				return !this.$store.state.cartList.find(item=>!item.checked)
+			},
+			
+		},
+		methods: {
+				textfalse(){
+				},
+				checkClick(){
+					if(this.IsSelectAll){
+						this.$store.state.cartList.forEach(item=>{
+							item.checked=false
+						})
+					}else{
+						this.$store.state.cartList.forEach(item=>{
+							item.checked=true
+						})
+					}
+				}
+			},
 	}
 </script>
 
